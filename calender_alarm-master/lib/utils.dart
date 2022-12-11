@@ -16,4 +16,7 @@ class Utils {
     final time = DateFormat.Hm().format(dateTime);
     return '$time';
   }
+
+  static DateTime removeTime(DateTime dateTime) =>
+      DateTime(dateTime.year, dateTime.month, dateTime.day);
 }

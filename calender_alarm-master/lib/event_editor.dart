@@ -1,6 +1,5 @@
 import 'package:calender_alarm/utils.dart';
 import 'package:flutter/material.dart';
-
 import 'event_info.dart';
 import 'event_provider.dart';
 
