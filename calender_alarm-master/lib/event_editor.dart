@@ -1,6 +1,7 @@
+import 'package:calender_alarm/event_info.dart';
 import 'package:calender_alarm/utils.dart';
 import 'package:flutter/material.dart';
-import 'event_info.dart';
+import 'package:provider/provider.dart';
 import 'event_provider.dart';
 
 class EventEditingPage extends StatefulWidget {
@@ -80,7 +81,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
             backgroundColor: const Color.fromARGB(255, 66, 66, 66),
             shadowColor: const Color.fromARGB(255, 66, 66, 66),
           ),
-          onPressed: () {},
+          onPressed: saveFrom,
           icon: const Icon(Icons.done),
           label: const Text('Save'),
         )
@@ -92,7 +93,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
         decoration: const InputDecoration(
           hintText: 'Add Title',
         ),
-        onFieldSubmitted: (_) {},
+        onFieldSubmitted: (_) => saveFrom(),
         validator: (title) =>
             title != null && title.isEmpty ? 'Title cannot be empty!' : null,
         controller: titleController,
@@ -201,11 +202,14 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
     if (isValid) {
       final event = Event(
-        title: titleController.text,
-        description: 'Description',
-        from: fromDate,
-        to: toDate,
-      );
+          title: titleController.text,
+          description: 'description',
+          from: fromDate);
+
+      final provider = Provider.of<EventProvider>(context, listen: false);
+      provider.addEvent(event);
+
+      Navigator.of(context).pop();
     }
   }
 }

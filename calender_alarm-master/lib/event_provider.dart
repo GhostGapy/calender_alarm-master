@@ -1,4 +1,4 @@
-import 'package:calender_alarm/event.dart';
+import 'package:calender_alarm/event_info.dart';
 import 'package:calender_alarm/utils.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -9,8 +9,7 @@ class EventProvider extends ChangeNotifier {
 
   void addEvent(Event event) {
     _events.add(event);
+
     notifyListeners();
   }
-
-  static of(BuildContext context) {}
 }
