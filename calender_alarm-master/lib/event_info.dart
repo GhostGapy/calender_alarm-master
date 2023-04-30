@@ -10,6 +10,6 @@ class Event {
     required this.title,
     required this.description,
     required this.from,
-    this.backgroundColor = Colors.lightGreen,
+    required this.backgroundColor,
   });
 }

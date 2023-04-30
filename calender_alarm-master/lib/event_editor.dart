@@ -20,6 +20,8 @@ class _EventEditingPageState extends State<EventEditingPage> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   late DateTime fromDate;
+  final descriptionController = TextEditingController();
+  late Color tileColor = Colors.green;
 
   @override
   void initState() {
@@ -30,7 +32,9 @@ class _EventEditingPageState extends State<EventEditingPage> {
     } else {
       final event = widget.event!;
       titleController.text = event.title;
+      descriptionController.text = event.description;
       fromDate = event.from;
+      tileColor = event.backgroundColor;
     }
   }
 
@@ -66,8 +70,85 @@ class _EventEditingPageState extends State<EventEditingPage> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               buildTitle(),
-              const SizedBox(height: 12),
+              const SizedBox(height: 40),
               buildDateTimePickers(),
+              const SizedBox(height: 22),
+              TextFormField(
+                maxLines: null, // Allows for multiple lines of text input
+                keyboardType: TextInputType
+                    .multiline, // Allows for new lines in text input
+                decoration: const InputDecoration(
+                  hintText: 'Enter your text here',
+                  border: OutlineInputBorder(),
+                ),
+                style: const TextStyle(fontSize: 16),
+                minLines: 5,
+                onFieldSubmitted: (_) => saveFrom(),
+                validator: (title) => title != null && title.isEmpty
+                    ? 'Title cannot be empty!'
+                    : null,
+                controller: descriptionController,
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField(
+                value: tileColor,
+                decoration: const InputDecoration(
+                  labelText: 'Event Color',
+                  border: OutlineInputBorder(),
+                ),
+                items: const [
+                  DropdownMenuItem(
+                    value: Colors.black,
+                    child: Text(
+                      'Black',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: Colors.red,
+                    child: Text(
+                      'Red',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: Colors.green,
+                    child: Text(
+                      'Green',
+                      style: TextStyle(
+                        color: Colors.green,
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: Colors.blue,
+                    child: Text(
+                      'Blue',
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  DropdownMenuItem(
+                    value: Colors.purple,
+                    child: Text(
+                      'Purple',
+                      style: TextStyle(
+                        color: Colors.purple,
+                      ),
+                    ),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    tileColor = value as Color;
+                  });
+                },
+              )
             ],
           ),
         ),
@@ -88,7 +169,7 @@ class _EventEditingPageState extends State<EventEditingPage> {
       ];
 
   Widget buildTitle() => TextFormField(
-        style: const TextStyle(fontSize: 24),
+        style: const TextStyle(fontSize: 20),
         textAlign: TextAlign.center,
         decoration: const InputDecoration(
           hintText: 'Add Title',
@@ -203,8 +284,9 @@ class _EventEditingPageState extends State<EventEditingPage> {
     if (isValid) {
       final event = Event(
           title: titleController.text,
-          description: 'description',
-          from: fromDate);
+          description: descriptionController.text,
+          from: fromDate,
+          backgroundColor: tileColor);
 
       final isEditing = widget.event != null;
 
