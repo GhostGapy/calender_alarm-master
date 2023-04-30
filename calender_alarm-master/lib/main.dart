@@ -13,16 +13,17 @@ class AlarmCalender extends StatelessWidget {
   const AlarmCalender({super.key}); //123
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.dark,
-      ),
-      home: const RootPage(),
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+        create: (context) => EventProvider(),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            brightness: Brightness.dark,
+          ),
+          home: const RootPage(),
+        ),
+      );
 }
 
 class RootPage extends StatefulWidget {
@@ -41,48 +42,41 @@ class _RootPageState extends State<RootPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    return Provider<EventProvider>(
-        create: (_) => EventProvider(),
-        // we use `builder` to obtain a new `BuildContext` that has access to the provider
-        builder: (context, child) {
-          // No longer throws
-          return Scaffold(
-            appBar: AppBar(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    'Alarm Calender ',
-                    style: TextStyle(
-                      fontFamily: 'OpenSansBold',
-                      fontSize: 22.0,
-                    ),
-                  ),
-                  Icon(
-                    Icons.alarm,
-                    color: Colors.white,
-                    size: 25.0,
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              'Alarm Calender ',
+              style: TextStyle(
+                fontFamily: 'OpenSansBold',
+                fontSize: 22.0,
               ),
             ),
-            body: pages[currentPage],
-            bottomNavigationBar: NavigationBar(
-              destinations: const [
-                NavigationDestination(
-                    icon: Icon(Icons.calendar_month), label: 'Calender'),
-                NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-                NavigationDestination(
-                    icon: Icon(Icons.person), label: 'Profile'),
-              ],
-              onDestinationSelected: (int index) {
-                setState(() {
-                  currentPage = index;
-                });
-              },
-              selectedIndex: currentPage,
+            Icon(
+              Icons.alarm,
+              color: Colors.white,
+              size: 25.0,
             ),
-          );
-        });
+          ],
+        ),
+      ),
+      body: pages[currentPage],
+      bottomNavigationBar: NavigationBar(
+        destinations: const [
+          NavigationDestination(
+              icon: Icon(Icons.calendar_month), label: 'Calender'),
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+        onDestinationSelected: (int index) {
+          setState(() {
+            currentPage = index;
+          });
+        },
+        selectedIndex: currentPage,
+      ),
+    );
   }
 }

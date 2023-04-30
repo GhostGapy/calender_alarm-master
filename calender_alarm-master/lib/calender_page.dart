@@ -1,4 +1,8 @@
+import 'package:calender_alarm/event_info.dart';
+import 'package:calender_alarm/event_provider.dart';
+import 'package:calender_alarm/event_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'event_editor.dart';
@@ -9,6 +13,7 @@ class CalenderPage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final events = Provider.of<EventProvider>(context).events;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 255, 115, 0),
@@ -25,99 +30,77 @@ class CalenderPage extends StatelessWidget {
           CalendarView.day,
           CalendarView.month,
         ],
-        dataSource: MeetingDataSource(_getDataSource()),
+        dataSource: EventDataSource(events),
         monthViewSettings: const MonthViewSettings(showAgenda: true),
         minDate: DateTime.now(),
+        onTap: (details) => calendarTapped(context, details),
+        onLongPress: (details) => addEventLongPress(context, details),
       ),
     );
   }
 
-  List<Meeting> _getDataSource() {
-    final List<Meeting> meetings = <Meeting>[];
-    final DateTime today = DateTime.now();
-    final DateTime startTime =
-        DateTime(today.year, today.month, today.day, 9, 0, 0);
-    final DateTime endTime = startTime.add(const Duration(hours: 2));
+  void addEventTap(BuildContext context, CalendarTapDetails details) {
+    if (details.targetElement == CalendarElement.calendarCell) {
+      final DateTime date = details.date!;
+      final Event newEvent = Event(
+        title: '',
+        description: '',
+        from: date,
+        backgroundColor: Colors.lightGreen,
+      );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => EventEditingPage(event: newEvent),
+        ),
+      );
+    }
+  }
 
-    meetings.add(Meeting("Conference for students 1", startTime, endTime,
-        const Color.fromARGB(255, 0, 206, 34), false));
+  //še ne dela
+  void addEventLongPress(
+      BuildContext context, CalendarLongPressDetails details) {
+    if (details.targetElement == CalendarElement.calendarCell) {
+      final DateTime date = details.date!;
+      final Event newEvent = Event(
+        title: '',
+        description: '',
+        from: date,
+        backgroundColor: Colors.lightGreen,
+      );
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => EventEditingPage(event: newEvent),
+        ),
+      );
+    }
+  }
 
-    meetings.add(Meeting(
-        "Conference for students 2",
-        DateTime(2022, 09, 14, 9, 0, 0),
-        DateTime(2022, 09, 14, 11, 0, 0),
-        const Color.fromARGB(255, 0, 89, 206),
-        false));
-
-    meetings.add(Meeting(
-        "Conference for students 3",
-        DateTime(2022, 09, 14, 10, 0, 0),
-        DateTime(2022, 09, 14, 13, 0, 0),
-        const Color.fromARGB(255, 0, 89, 206),
-        false));
-
-    meetings.add(Meeting(
-        "Conference for teachers 1",
-        DateTime(2022, 09, 14, 10, 0, 0),
-        DateTime(2022, 09, 14, 13, 0, 0),
-        const Color.fromARGB(255, 117, 206, 0),
-        false));
-
-    meetings.add(Meeting(
-        "Conference for teachers 2",
-        DateTime(2022, 09, 14, 10, 0, 0),
-        DateTime(2022, 09, 14, 13, 0, 0),
-        const Color.fromARGB(255, 117, 206, 0),
-        false));
-
-    meetings.add(Meeting(
-        "Conference for teachers 3",
-        DateTime(2022, 09, 14, 10, 0, 0),
-        DateTime(2022, 09, 14, 13, 0, 0),
-        const Color.fromARGB(255, 117, 206, 0),
-        false));
-
-    return meetings;
+  void calendarTapped(
+      BuildContext context, CalendarTapDetails calendarTapDetails) {
+    if (calendarTapDetails.targetElement == CalendarElement.appointment) {
+      Event event = calendarTapDetails.appointments![0];
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => EventView(event: event),
+        ),
+      );
+    }
   }
 }
 
-class MeetingDataSource extends CalendarDataSource {
-  MeetingDataSource(List<Meeting> source) {
-    appointments = source;
+class EventDataSource extends CalendarDataSource {
+  EventDataSource(List<Event> appointments) {
+    this.appointments = appointments;
   }
+
+  Event getEvent(int index) => appointments![index] as Event;
 
   @override
-  DateTime getStartTime(int index) {
-    return appointments![index].from;
-  }
+  DateTime getStartTime(int index) => getEvent(index).from;
 
   @override
-  DateTime getEndTime(int index) {
-    return appointments![index].to;
-  }
+  String getSubject(int index) => getEvent(index).title;
 
   @override
-  String getSubject(int index) {
-    return appointments![index].eventName;
-  }
-
-  @override
-  Color getColor(int index) {
-    return appointments![index].background;
-  }
-
-  @override
-  bool isAllDay(int index) {
-    return appointments![index].isAllDay;
-  }
-}
-
-class Meeting {
-  Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  String eventName;
-  DateTime from;
-  DateTime to;
-  Color background;
-  bool isAllDay;
+  Color getColor(int index) => getEvent(index).backgroundColor;
 }

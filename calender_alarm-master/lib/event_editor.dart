@@ -20,7 +20,6 @@ class _EventEditingPageState extends State<EventEditingPage> {
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   late DateTime fromDate;
-  late DateTime toDate;
 
   @override
   void initState() {
@@ -28,9 +27,10 @@ class _EventEditingPageState extends State<EventEditingPage> {
 
     if (widget.event == null) {
       fromDate = DateTime.now();
-      toDate = DateTime.now().add(
-        const Duration(hours: 2),
-      );
+    } else {
+      final event = widget.event!;
+      titleController.text = event.title;
+      fromDate = event.from;
     }
   }
 
@@ -206,8 +206,15 @@ class _EventEditingPageState extends State<EventEditingPage> {
           description: 'description',
           from: fromDate);
 
+      final isEditing = widget.event != null;
+
       final provider = Provider.of<EventProvider>(context, listen: false);
-      provider.addEvent(event);
+
+      if (isEditing) {
+        provider.editEvent(event, widget.event!);
+      } else {
+        provider.addEvent(event);
+      }
 
       Navigator.of(context).pop();
     }
