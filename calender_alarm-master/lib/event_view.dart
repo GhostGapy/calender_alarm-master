@@ -49,7 +49,7 @@ class EventView extends StatelessWidget {
   Widget buildDate(Event event) {
     return Row(
       children: [
-        Icon(Icons.calendar_today),
+        const Icon(Icons.calendar_today),
         const SizedBox(
           width: 8,
         ),

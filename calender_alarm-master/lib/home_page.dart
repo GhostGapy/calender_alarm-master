@@ -1,4 +1,3 @@
-import 'package:calender_alarm/calender_page.dart';
 import 'package:calender_alarm/event_editor.dart';
 import 'package:calender_alarm/event_info.dart';
 import 'package:calender_alarm/event_provider.dart';
@@ -6,7 +5,6 @@ import 'package:calender_alarm/event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -22,7 +20,7 @@ class HomePage extends StatelessWidget {
     List<Event> tomorrowEvents = [];
     List<Event> nextWeekEvents = [];
 
-    events.forEach((event) {
+    for (var event in events) {
       if (event.from.year == today.year &&
           event.from.month == today.month &&
           event.from.day == today.day) {
@@ -34,7 +32,7 @@ class HomePage extends StatelessWidget {
       } else if (event.from.isAfter(today) && event.from.isBefore(nextWeek)) {
         nextWeekEvents.add(event);
       }
-    });
+    }
 
     return Scaffold(
       body: ListView(
