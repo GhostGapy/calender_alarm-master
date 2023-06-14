@@ -7,11 +7,9 @@ import 'package:calender_alarm/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_preview/device_preview.dart';
 
-void main() => runApp(
-      DevicePreview(
-        builder: (context) => const AlarmCalender(),
-      ),
-    );
+void main() {
+  runApp(const AlarmCalender());
+}
 
 class AlarmCalender extends StatelessWidget {
   const AlarmCalender({Key? key}); // Remove 'super.key' as it is not needed
